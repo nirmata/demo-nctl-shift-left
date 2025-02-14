@@ -15,37 +15,11 @@
                 "text": "Host namespace settings are properly configured"
               },
               "help": {
-                "text": "Host namespace settings (hostIPC, hostPID, hostNetwork) are correctly set to false, which is secure.",
-                "markdown": "**Current Configuration:** The deployment has secure host namespace settings:\n```yaml\nspec:\n  template:\n    spec:\n      hostIPC: false\n      hostPID: false\n      hostNetwork: false\n```"
+                "text": "Host namespace settings (hostIPC, hostPID, hostNetwork) are incorrectly set to true, which is insecure.",
+                "markdown": "**Current Configuration:** The deployment has insecure host namespace settings. Change it to the following:\n```yaml\nspec:\n  template:\n    spec:\n      hostIPC: false\n      hostPID: false\n      hostNetwork: false\n```"
               },
               "properties": {
                 "category": "Pod Security Standards (Baseline)"
-              }
-            },
-            {
-              "id": "outdated-image",
-              "shortDescription": {
-                "text": "Container image version is outdated"
-              },
-              "help": {
-                "text": "The nginx image version 1.14.2 is outdated and may contain security vulnerabilities.",
-                "markdown": "**Remediation:** Update to a more recent nginx version.\n\nCurrent:\n```yaml\nimage: nginx:1.14.2\n```\n\nRecommended:\n```yaml\nimage: nginx:1.25.3\n```\n\nAlways use specific versions rather than 'latest' tag for better control and stability."
-              },
-              "properties": {
-                "category": "Container Security"
-              }
-            },
-            {
-              "id": "resource-limits",
-              "shortDescription": {
-                "text": "Resource limits and requests are properly set"
-              },
-              "help": {
-                "text": "The deployment has appropriate resource limits and requests defined.",
-                "markdown": "**Current Configuration:** Resource limits are well-defined:\n```yaml\nresources:\n  requests:\n    memory: \"64Mi\"\n    cpu: \"250m\"\n  limits:\n    memory: \"128Mi\"\n    cpu: \"500m\"\n```"
-              },
-              "properties": {
-                "category": "Resource Management"
               }
             }
           ]
@@ -56,7 +30,7 @@
           "ruleId": "validate-host-namespace",
           "level": "note",
           "message": {
-            "text": "Host namespace settings are properly configured with hostIPC: false, hostPID: false, and hostNetwork: false"
+            "text": "Host namespace settings should be properly configured with hostIPC: false, hostPID: false, and hostNetwork: false"
           },
           "locations": [
             {
@@ -65,48 +39,8 @@
                   "uri": "config-files.k8s/bad-deployment.yaml"
                 },
                 "region": {
-                  "startLine": 16,
-                  "endLine": 18
-                }
-              }
-            }
-          ]
-        },
-        {
-          "ruleId": "outdated-image",
-          "level": "warning",
-          "message": {
-            "text": "The nginx image version 1.14.2 is outdated. Consider updating to a more recent version like 1.25.3"
-          },
-          "locations": [
-            {
-              "physicalLocation": {
-                "artifactLocation": {
-                  "uri": "config-files.k8s/bad-deployment.yaml"
-                },
-                "region": {
-                  "startLine": 20,
-                  "endLine": 20
-                }
-              }
-            }
-          ]
-        },
-        {
-          "ruleId": "resource-limits",
-          "level": "note",
-          "message": {
-            "text": "Resource limits and requests are properly configured"
-          },
-          "locations": [
-            {
-              "physicalLocation": {
-                "artifactLocation": {
-                  "uri": "config-files.k8s/bad-deployment.yaml"
-                },
-                "region": {
-                  "startLine": 21,
-                  "endLine": 28
+                  "startLine": 17,
+                  "endLine": 19
                 }
               }
             }

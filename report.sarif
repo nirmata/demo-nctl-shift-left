@@ -64,7 +64,7 @@
                 ]
               },
               "shortDescription": {
-                "text": "validation error: Sharing the host namespaces is disallowed."
+                "text": "validation error: Sharing the host namespaces is disallowed"
               }
             }
           ],

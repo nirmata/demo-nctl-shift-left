@@ -19,6 +19,24 @@
           },
           "fixes": [
             {
+              "artifactChanges": [
+                {
+                  "artifactLocation": {
+                    "uri": "src/config.py"
+                  },
+                  "replacements": [
+                    {
+                      "deletedRegion": {
+                        "startLine": 1,
+                        "startColumn": 1
+                      },
+                      "insertedContent": {
+                        "text": "import os\n\nAPI_KEY = os.getenv('API_KEY')\nDB_PASSWORD = os.getenv('DB_PASSWORD')\n"
+                      }
+                    }
+                  ]
+                }
+              ],
               "description": {
                 "text": "[https://docs.nirmata.io/policysets/podsecurity/baseline/disallow-host-namespaces/](https://docs.nirmata.io/policysets/podsecurity/baseline/disallow-host-namespaces/)"
               }
@@ -27,6 +45,7 @@
           "ruleId": "validate-host-namespace"
         }
       ],
+      
       "tool": {
         "driver": {
           "informationUri": "https://docs.nirmata.io/nctl/",

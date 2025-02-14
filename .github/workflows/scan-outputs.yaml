@@ -39,10 +39,10 @@ jobs:
       - name: NCTL Scan - SARIF output
         run: nctl scan kubernetes --policies controls/pod-security --resources config-files/k8s --output sarif --output results.sarif --audit-as-warn
 
-      - name: Upload SARIF file
+      - name: Upload SARIF report
         uses: github/codeql-action/upload-sarif@v2
         with:
           sarif_file: report.sarif
-          category: NCTL Scan
+
 
       - run: echo "🍏 This job's status is ${{ job.status }}."

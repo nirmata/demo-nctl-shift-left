@@ -9,7 +9,7 @@
             {
               "physicalLocation": {
                 "artifactLocation": {
-                  "uri": "demo-ns/demo-pod(Pod)"
+                  "uri": "config-files/k8s/bad-deployment.yaml"
                 }
               }
             }

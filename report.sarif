@@ -9,10 +9,7 @@
             {
               "physicalLocation": {
                 "artifactLocation": {
-                  "uri": "scan-manifests/resources/bad-deployment.yaml"
-                },
-                "region": {
-                  "startLine": 17
+                  "uri": "demo-ns/demo-pod(Pod)"
                 }
               }
             }
@@ -20,6 +17,13 @@
           "message": {
             "text": "validation error: Sharing the host namespaces is disallowed. rule validate-namespace failed at path /spec/template/spec/hostIPC"
           },
+          "fixes": [
+            {
+              "description": {
+                "text": "[https://docs.nirmata.io/policysets/podsecurity/baseline/disallow-host-namespaces/](https://docs.nirmata.io/policysets/podsecurity/baseline/disallow-host-namespaces/)"
+              }
+            }
+          ],
           "ruleId": "validate-host-namespace"
         }
       ],

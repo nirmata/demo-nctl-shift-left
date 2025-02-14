@@ -12,7 +12,7 @@
             {
               "id": "validate-host-namespace",
               "shortDescription": {
-                "text": "Host namespace settings are properly configured"
+                "text": "Host namespace settings should be properly configured"
               },
               "help": {
                 "text": "Host namespace settings (hostIPC, hostPID, hostNetwork) are incorrectly set to true, which is insecure.",
@@ -40,9 +40,44 @@
                 },
                 "region": {
                   "startLine": 17,
-                  "endLine": 19
+                  "startColumn": 7,
+                  "endLine": 19,
+                  "endColumn": 29,
+                  "snippet": {
+                    "text": "      hostIPC: true\n      hostPID: true\n      hostNetwork: true"
+                  }
                 }
               }
+            }
+          ],
+          "fixes": [
+            {
+              "description": {
+                "text": "Set host namespace settings to false for better security"
+              },
+              "artifactChanges": [
+                {
+                  "artifactLocation": {
+                    "uri": "config-files/k8s/bad-deployment.yaml"
+                  },
+                  "replacements": [
+                    {
+                      "deletedRegion": {
+                        "startLine": 17,
+                        "startColumn": 7,
+                        "endLine": 19,
+                        "endColumn": 29,
+                        "snippet": {
+                          "text": "      hostIPC: true\n      hostPID: true\n      hostNetwork: true"
+                        }
+                      },
+                      "insertedContent": {
+                        "text": "      hostIPC: false\n      hostPID: false\n      hostNetwork: false"
+                      }
+                    }
+                  ]
+                }
+              ]
             }
           ]
         }

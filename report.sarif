@@ -22,7 +22,7 @@
               "artifactChanges": [
                 {
                   "artifactLocation": {
-                    "uri": "src/config.py"
+                    "uri": "config-files/k8s/bad-deployment.yaml"
                   },
                   "replacements": [
                     {
@@ -31,7 +31,7 @@
                         "startColumn": 1
                       },
                       "insertedContent": {
-                        "text": "import os\n\nAPI_KEY = os.getenv('API_KEY')\nDB_PASSWORD = os.getenv('DB_PASSWORD')\n"
+                        "text": "apiVersion: apps/v1\nkind: Deployment\nmetadata:\n  name: nginx-deployment\n  labels:\n    app: nginx\nspec:\n  replicas: 2\n  selector:\n    matchLabels:\n      app: nginx\n  template:\n    metadata:\n      labels:\n        app: nginx\n    spec:\n      containers:\n      - name: nginx\n        image: nginx:1.14.2\n        resources:\n          requests:\n            memory: \"64Mi\"\n            cpu: \"250m\"\n          limits:\n            memory: \"128Mi\"\n            cpu: \"500m\""
                       }
                     }
                   ]

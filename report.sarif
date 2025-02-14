@@ -62,7 +62,7 @@
             {
               "physicalLocation": {
                 "artifactLocation": {
-                  "uri": "deployment.yaml"
+                  "uri": "config-files.k8s/bad-deployment.yaml"
                 },
                 "region": {
                   "startLine": 16,
@@ -82,7 +82,7 @@
             {
               "physicalLocation": {
                 "artifactLocation": {
-                  "uri": "deployment.yaml"
+                  "uri": "config-files.k8s/bad-deployment.yaml"
                 },
                 "region": {
                   "startLine": 20,
@@ -102,7 +102,7 @@
             {
               "physicalLocation": {
                 "artifactLocation": {
-                  "uri": "deployment.yaml"
+                  "uri": "config-files.k8s/bad-deployment.yaml"
                 },
                 "region": {
                   "startLine": 21,

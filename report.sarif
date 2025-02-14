@@ -28,7 +28,7 @@
       "results": [
         {
           "ruleId": "validate-host-namespace",
-          "level": "note",
+          "level": "critical",
           "message": {
             "text": "Host namespace settings should be properly configured with hostIPC: false, hostPID: false, and hostNetwork: false"
           },

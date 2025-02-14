@@ -12,14 +12,40 @@
             {
               "id": "validate-host-namespace",
               "shortDescription": {
-                "text": "Sharing the host namespaces is disallowed"
+                "text": "Host namespace settings are properly configured"
               },
               "help": {
-                "text": "Disallow host namespaces in Kubernetes deployments.",
-                "markdown": "**Remediation:** Remove `hostIPC`, `hostPID`, and `hostNetwork` fields from the Deployment.\n\n```yaml\napiVersion: apps/v1\nkind: Deployment\nmetadata:\n  name: nginx-deployment\n  labels:\n    app: nginx\nspec:\n  replicas: 2\n  selector:\n    matchLabels:\n      app: nginx\n  template:\n    metadata:\n      labels:\n        app: nginx\n    spec:\n      containers:\n      - name: nginx\n        image: nginx:1.14.2\n        resources:\n          requests:\n            memory: \"64Mi\"\n            cpu: \"250m\"\n          limits:\n            memory: \"128Mi\"\n            cpu: \"500m\"\n```"
+                "text": "Host namespace settings (hostIPC, hostPID, hostNetwork) are correctly set to false, which is secure.",
+                "markdown": "**Current Configuration:** The deployment has secure host namespace settings:\n```yaml\nspec:\n  template:\n    spec:\n      hostIPC: false\n      hostPID: false\n      hostNetwork: false\n```"
               },
               "properties": {
                 "category": "Pod Security Standards (Baseline)"
+              }
+            },
+            {
+              "id": "outdated-image",
+              "shortDescription": {
+                "text": "Container image version is outdated"
+              },
+              "help": {
+                "text": "The nginx image version 1.14.2 is outdated and may contain security vulnerabilities.",
+                "markdown": "**Remediation:** Update to a more recent nginx version.\n\nCurrent:\n```yaml\nimage: nginx:1.14.2\n```\n\nRecommended:\n```yaml\nimage: nginx:1.25.3\n```\n\nAlways use specific versions rather than 'latest' tag for better control and stability."
+              },
+              "properties": {
+                "category": "Container Security"
+              }
+            },
+            {
+              "id": "resource-limits",
+              "shortDescription": {
+                "text": "Resource limits and requests are properly set"
+              },
+              "help": {
+                "text": "The deployment has appropriate resource limits and requests defined.",
+                "markdown": "**Current Configuration:** Resource limits are well-defined:\n```yaml\nresources:\n  requests:\n    memory: \"64Mi\"\n    cpu: \"250m\"\n  limits:\n    memory: \"128Mi\"\n    cpu: \"500m\"\n```"
+              },
+              "properties": {
+                "category": "Resource Management"
               }
             }
           ]
@@ -28,44 +54,61 @@
       "results": [
         {
           "ruleId": "validate-host-namespace",
-          "level": "warning",
+          "level": "note",
           "message": {
-            "text": "Validation error: Sharing the host namespaces is disallowed. Rule `validate-host-namespace` failed at `/spec/template/spec`."
+            "text": "Host namespace settings are properly configured with hostIPC: false, hostPID: false, and hostNetwork: false"
           },
           "locations": [
             {
               "physicalLocation": {
                 "artifactLocation": {
-                  "uri": "config-files/k8s/bad-deployment.yaml"
+                  "uri": "deployment.yaml"
+                },
+                "region": {
+                  "startLine": 16,
+                  "endLine": 18
                 }
               }
             }
-          ],
-          "fixes": [
+          ]
+        },
+        {
+          "ruleId": "outdated-image",
+          "level": "warning",
+          "message": {
+            "text": "The nginx image version 1.14.2 is outdated. Consider updating to a more recent version like 1.25.3"
+          },
+          "locations": [
             {
-              "description": {
-                "text": "Remove `hostIPC`, `hostPID`, and `hostNetwork` fields to comply with Pod Security Standards."
-              },
-              "artifactChanges": [
-                {
-                  "artifactLocation": {
-                    "uri": "config-files/k8s/bad-deployment.yaml"
-                  },
-                  "replacements": [
-                    {
-                      "deletedRegion": {
-                        "startLine": 8,
-                        "startColumn": 7,
-                        "endLine": 10,
-                        "endColumn": 24
-                      },
-                      "insertedContent": {
-                        "text": "    spec:\n      containers:\n      - name: nginx\n        image: nginx:1.14.2\n        resources:\n          requests:\n            memory: \"64Mi\"\n            cpu: \"250m\"\n          limits:\n            memory: \"128Mi\"\n            cpu: \"500m\""
-                      }
-                    }
-                  ]
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "deployment.yaml"
+                },
+                "region": {
+                  "startLine": 20,
+                  "endLine": 20
                 }
-              ]
+              }
+            }
+          ]
+        },
+        {
+          "ruleId": "resource-limits",
+          "level": "note",
+          "message": {
+            "text": "Resource limits and requests are properly configured"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "deployment.yaml"
+                },
+                "region": {
+                  "startLine": 21,
+                  "endLine": 28
+                }
+              }
             }
           ]
         }

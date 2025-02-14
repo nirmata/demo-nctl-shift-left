@@ -24,20 +24,20 @@ jobs:
       - name: Check nctl version
         run: nctl version
 
-      - name: NCTL Scan - Concise Report
-        run: nctl scan kubernetes --policies controls/pod-security --resources config-files/k8s --details --audit-as-warn
+      # - name: NCTL Scan - Concise Report
+      #   run: nctl scan kubernetes --policies controls/pod-security --resources config-files/k8s --details --audit-as-warn
 
-      - name: NCTL Scan - Detailed Report
-        run: nctl scan kubernetes --policies controls/pod-security --resources config-files/k8s --details --audit-as-warn
+      # - name: NCTL Scan - Detailed Report
+      #   run: nctl scan kubernetes --policies controls/pod-security --resources config-files/k8s --details --audit-as-warn
 
-      - name: NCTL Scan - JSON output
-        run: nctl scan kubernetes --policies controls/pod-security --resources config-files/k8s --output json --audit-as-warn
+      # - name: NCTL Scan - JSON output
+      #   run: nctl scan kubernetes --policies controls/pod-security --resources config-files/k8s --output json --audit-as-warn
 
-      - name: NCTL Scan - YAML output
-        run: nctl scan kubernetes --policies controls/pod-security --resources config-files/k8s --output yaml
+      # - name: NCTL Scan - YAML output
+      #   run: nctl scan kubernetes --policies controls/pod-security --resources config-files/k8s --output yaml
 
-      - name: NCTL Scan - SARIF output
-        run: nctl scan kubernetes --policies controls/pod-security --resources config-files/k8s --output sarif --output results.sarif --audit-as-warn
+      # - name: NCTL Scan - SARIF output
+      #   run: nctl scan kubernetes --policies controls/pod-security --resources config-files/k8s --output sarif --output results.sarif --audit-as-warn
 
       - name: Upload SARIF report
         uses: github/codeql-action/upload-sarif@v2

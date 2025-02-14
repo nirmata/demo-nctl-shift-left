@@ -53,7 +53,7 @@
           "rules": [
             {
               "help": {
-                "markdown": "**Remediation:** Add resource limits to the container.\n```yaml\nresources:\n  requests:\n    memory: \"64Mi\"\n    cpu: \"250m\"\n  limits:\n    memory: \"128Mi\"\n    cpu: \"500m\"\n```"
+                "markdown": "**Remediation:** Add resource limits to the container.\n```yaml\nresources:\n  requests:\n    memory: \"64Mi\"\n    cpu: \"250m\"\n  limits:\n    memory: \"128Mi\"\n    cpu: \"500m\"\n```",
                 "text": "Disallow host namespaces"
               },
               "id": "validate-namespace",

@@ -1,10 +1,37 @@
 {
   "$schema": "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-2.1.0.json",
+  "version": "2.1.0",
   "runs": [
     {
+      "tool": {
+        "driver": {
+          "name": "nctl",
+          "version": "3.3.8",
+          "informationUri": "https://docs.nirmata.io/nctl/",
+          "rules": [
+            {
+              "id": "validate-host-namespace",
+              "shortDescription": {
+                "text": "Sharing the host namespaces is disallowed"
+              },
+              "help": {
+                "text": "Disallow host namespaces in Kubernetes deployments.",
+                "markdown": "**Remediation:** Remove `hostIPC`, `hostPID`, and `hostNetwork` fields from the Deployment.\n\n```yaml\napiVersion: apps/v1\nkind: Deployment\nmetadata:\n  name: nginx-deployment\n  labels:\n    app: nginx\nspec:\n  replicas: 2\n  selector:\n    matchLabels:\n      app: nginx\n  template:\n    metadata:\n      labels:\n        app: nginx\n    spec:\n      containers:\n      - name: nginx\n        image: nginx:1.14.2\n        resources:\n          requests:\n            memory: \"64Mi\"\n            cpu: \"250m\"\n          limits:\n            memory: \"128Mi\"\n            cpu: \"500m\"\n```"
+              },
+              "properties": {
+                "category": "Pod Security Standards (Baseline)"
+              }
+            }
+          ]
+        }
+      },
       "results": [
         {
+          "ruleId": "validate-host-namespace",
           "level": "warning",
+          "message": {
+            "text": "Validation error: Sharing the host namespaces is disallowed. Rule `validate-host-namespace` failed at `/spec/template/spec`."
+          },
           "locations": [
             {
               "physicalLocation": {
@@ -14,11 +41,11 @@
               }
             }
           ],
-          "message": {
-            "text": "validation error: Sharing the host namespaces is disallowed. rule validate-namespace failed at path /spec/template/spec/hostIPC"
-          },
           "fixes": [
             {
+              "description": {
+                "text": "Remove `hostIPC`, `hostPID`, and `hostNetwork` fields to comply with Pod Security Standards."
+              },
               "artifactChanges": [
                 {
                   "artifactLocation": {
@@ -27,51 +54,22 @@
                   "replacements": [
                     {
                       "deletedRegion": {
-                        "startLine": 1,
-                        "startColumn": 1
+                        "startLine": 8,
+                        "startColumn": 7,
+                        "endLine": 10,
+                        "endColumn": 24
                       },
                       "insertedContent": {
-                        "text": "apiVersion: apps/v1\nkind: Deployment\nmetadata:\n  name: nginx-deployment\n  labels:\n    app: nginx\nspec:\n  replicas: 2\n  selector:\n    matchLabels:\n      app: nginx\n  template:\n    metadata:\n      labels:\n        app: nginx\n    spec:\n      containers:\n      - name: nginx\n        image: nginx:1.14.2\n        resources:\n          requests:\n            memory: \"64Mi\"\n            cpu: \"250m\"\n          limits:\n            memory: \"128Mi\"\n            cpu: \"500m\""
+                        "text": "    spec:\n      containers:\n      - name: nginx\n        image: nginx:1.14.2\n        resources:\n          requests:\n            memory: \"64Mi\"\n            cpu: \"250m\"\n          limits:\n            memory: \"128Mi\"\n            cpu: \"500m\""
                       }
                     }
                   ]
                 }
-              ],
-              "description": {
-                "text": "[https://docs.nirmata.io/policysets/podsecurity/baseline/disallow-host-namespaces/](https://docs.nirmata.io/policysets/podsecurity/baseline/disallow-host-namespaces/)"
-              }
+              ]
             }
-          ],
-          "ruleId": "validate-host-namespace"
+          ]
         }
-      ],
-      
-      "tool": {
-        "driver": {
-          "informationUri": "https://docs.nirmata.io/nctl/",
-          "name": "nctl",
-          "rules": [
-            {
-              "help": {
-                "markdown": "**Remediation:** Add resource limits to the container.\n```yaml\nresources:\n  requests:\n    memory: \"64Mi\"\n    cpu: \"250m\"\n  limits:\n    memory: \"128Mi\"\n    cpu: \"500m\"\n```",
-                "text": "Disallow host namespaces"
-              },
-              "id": "validate-namespace",
-              "properties": {
-                "category": "Pod Security Standards (Baseline)",
-                "tags": [
-                  ""
-                ]
-              },
-              "shortDescription": {
-                "text": "validation error: Sharing the host namespaces is disallowed"
-              }
-            }
-          ],
-          "version": "3.3.8"
-        }
-      }
+      ]
     }
-  ],
-  "version": "2.1.0"
+  ]
 }

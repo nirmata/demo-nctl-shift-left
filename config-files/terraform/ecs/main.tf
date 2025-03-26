@@ -17,7 +17,7 @@ resource "aws_ecs_capacity_provider" "ecs_capacity_provider" {
     managed_scaling {
       maximum_scaling_step_size = 1000
       minimum_scaling_step_size = 1
-      status                    = "ENABLED"
+      status                    = "DISABLED"
       target_capacity           = 3
     }
   }
@@ -38,7 +38,7 @@ resource "aws_ecs_cluster_capacity_providers" "example" {
 # Define the ECS task definition for the service
 resource "aws_ecs_task_definition" "ecs_task_definition" {
   family             = "my-ecs-task"
-  network_mode       = "awsvpc"
+  network_mode       = "bridge"
   execution_role_arn = "arn:aws:iam::844333597536:role/ecsTaskExecutionRole" 
   cpu                = 256
   runtime_platform {

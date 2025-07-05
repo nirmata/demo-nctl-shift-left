@@ -1,0 +1,19 @@
+apiVersion: json.kyverno.io/v1alpha1
+kind: ValidatingPolicy
+metadata:
+  name: eks-ami-validation
+  annotations:
+    policies.kyverno.io/category: EKS Security
+    policies.kyverno.io/severity: High
+    policies.kyverno.io/description: Validates EKS node group AMI types and security configurations
+spec:
+  rules:
+    - name: validate-eks-ami-type
+      match:
+        any:
+          - (planned_values.root_module.resources | length(@) > `0`): true
+      assert:
+        all:
+          - message: EKS node group must use AL2_x86_64 AMI type for security compliance.
+            check:
+              (planned_values.root_module.resources[?type=='aws_eks_node_group'].values.ami_type[?contains(@, 'AL2_x86_64')] | length(@) > `0`): true 

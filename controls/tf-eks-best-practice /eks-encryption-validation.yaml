@@ -1,0 +1,18 @@
+apiVersion: json.kyverno.io/v1alpha1
+kind: ValidatingPolicy
+metadata:
+  name: eks-encryption-validation
+spec:
+  rules:
+    - name: validate-eks-encryption
+      match:
+        any:
+          - (planned_values.root_module.resources | length(@) > `0`): true
+      assert:
+        all:
+          - message: KMS key must have key rotation enabled for security compliance.
+            check:
+              (planned_values.root_module.resources[?type=='aws_kms_key'].values.enable_key_rotation[?@ == `true`] | length(@) > `0`): true
+          - message: EKS cluster must have encryption configuration enabled for secrets.
+            check:
+              (planned_values.root_module.resources[?type=='aws_eks_cluster'].values.encryption_config[0].resources[?contains(@, 'secrets')] | length(@) > `0`): true 

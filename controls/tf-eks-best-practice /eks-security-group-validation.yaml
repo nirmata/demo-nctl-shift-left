@@ -1,0 +1,21 @@
+apiVersion: json.kyverno.io/v1alpha1
+kind: ValidatingPolicy
+metadata:
+  name: eks-security-group-validation
+spec:
+  rules:
+    - name: validate-eks-security-group
+      match:
+        any:
+          - (planned_values.root_module.resources | length(@) > `0`): true
+      assert:
+        all:
+          - message: Security groups must not allow port 80 (HTTP) for security compliance.
+            check:
+              (planned_values.root_module.resources[?type=='aws_security_group'].values.ingress[?from_port == `80` || to_port == `80`] | length(@) == `0`): true
+          - message: Security groups must not allow port 443 (HTTPS) for security compliance.
+            check:
+              (planned_values.root_module.resources[?type=='aws_security_group'].values.ingress[?from_port == `443` || to_port == `443`] | length(@) == `0`): true
+          - message: Security groups must not allow port 22 (SSH) for security compliance.
+            check:
+              (planned_values.root_module.resources[?type=='aws_security_group'].values.ingress[?from_port == `22` || to_port == `22`] | length(@) == `0`): true 

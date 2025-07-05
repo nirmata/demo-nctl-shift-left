@@ -1,0 +1,31 @@
+
+apiVersion: json.kyverno.io/v1alpha1
+kind: ValidatingPolicy
+metadata:
+  name: eks-log-types-validation
+spec:
+  rules:
+    - name: eks-log-types-validation
+      match:
+        any:
+          - (planned_values.root_module.resources | length(@) > `0`): true
+      assert:
+        all:
+          - message: There is at least one resource in the plan.
+            check:
+              (planned_values.root_module.resources | length(@) > `0`): true
+          - message: EKS cluster must have 'api' log type enabled.
+            check:
+              (planned_values.root_module.resources[?type=='aws_eks_cluster'].values.enabled_cluster_log_types[?contains(@, 'api')] | length(@) > `0`): true
+          - message: EKS cluster must have 'audit' log type enabled.
+            check:
+              (planned_values.root_module.resources[?type=='aws_eks_cluster'].values.enabled_cluster_log_types[?contains(@, 'audit')] | length(@) > `0`): true
+          - message: EKS cluster must have 'authenticator' log type enabled.
+            check:
+              (planned_values.root_module.resources[?type=='aws_eks_cluster'].values.enabled_cluster_log_types[?contains(@, 'authenticator')] | length(@) > `0`): true
+          - message: EKS cluster must have 'controllerManager' log type enabled.
+            check:
+              (planned_values.root_module.resources[?type=='aws_eks_cluster'].values.enabled_cluster_log_types[?contains(@, 'controllerManager')] | length(@) > `0`): true
+          - message: EKS cluster must have 'scheduler' log type enabled.
+            check:
+              (planned_values.root_module.resources[?type=='aws_eks_cluster'].values.enabled_cluster_log_types[?contains(@, 'scheduler')] | length(@) > `0`): true

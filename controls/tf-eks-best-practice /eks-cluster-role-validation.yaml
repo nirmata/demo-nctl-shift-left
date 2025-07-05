@@ -1,0 +1,15 @@
+apiVersion: json.kyverno.io/v1alpha1
+kind: ValidatingPolicy
+metadata:
+  name: eks-cluster-role-validation
+spec:
+  rules:
+    - name: validate-eks-cluster-role
+      match:
+        any:
+          - (planned_values.root_module.resources | length(@) > `0`): true
+      assert:
+        all:
+          - message: EKS cluster role must have AmazonEKSClusterPolicy attached for proper cluster functionality.
+            check:
+              (planned_values.root_module.resources[?type=='aws_iam_role_policy_attachment'].values.policy_arn[?contains(@, 'AmazonEKSClusterPolicy')] | length(@) > `0`): true 

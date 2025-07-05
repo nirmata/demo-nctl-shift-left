@@ -1,0 +1,21 @@
+apiVersion: json.kyverno.io/v1alpha1
+kind: ValidatingPolicy
+metadata:
+  name: eks-node-group-role-validation
+spec:
+  rules:
+    - name: validate-eks-node-group-role
+      match:
+        any:
+          - (planned_values.root_module.resources | length(@) > `0`): true
+      assert:
+        all:
+          - message: EKS node group role must have AmazonEKSWorkerNodePolicy attached.
+            check:
+              (planned_values.root_module.resources[?type=='aws_iam_role_policy_attachment'].values.policy_arn[?contains(@, 'AmazonEKSWorkerNodePolicy')] | length(@) > `0`): true
+          - message: EKS node group role must have AmazonEKS_CNI_Policy attached.
+            check:
+              (planned_values.root_module.resources[?type=='aws_iam_role_policy_attachment'].values.policy_arn[?contains(@, 'AmazonEKS_CNI_Policy')] | length(@) > `0`): true
+          - message: EKS node group role must have AmazonEC2ContainerRegistryReadOnly policy attached.
+            check:
+              (planned_values.root_module.resources[?type=='aws_iam_role_policy_attachment'].values.policy_arn[?contains(@, 'AmazonEC2ContainerRegistryReadOnly')] | length(@) > `0`): true 

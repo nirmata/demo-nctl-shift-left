@@ -1,0 +1,15 @@
+apiVersion: json.kyverno.io/v1alpha1
+kind: ValidatingPolicy
+metadata:
+  name: eks-cluster-version-validation
+spec:
+  rules:
+    - name: validate-eks-cluster-version
+      match:
+        any:
+          - (planned_values.root_module.resources | length(@) > `0`): true
+      assert:
+        all:
+          - message: EKS cluster version must be between 1.28 and 1.32 for security and compatibility.
+            check:
+              (planned_values.root_module.resources[?type=='aws_eks_cluster'].values.version[?contains(@, '1.28') || contains(@, '1.29') || contains(@, '1.30') || contains(@, '1.31') || contains(@, '1.32')] | length(@) > `0`): true 

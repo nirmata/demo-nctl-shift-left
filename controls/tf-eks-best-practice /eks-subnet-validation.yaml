@@ -1,0 +1,15 @@
+apiVersion: json.kyverno.io/v1alpha1
+kind: ValidatingPolicy
+metadata:
+  name: eks-subnet-validation
+spec:
+  rules:
+    - name: validate-eks-subnets
+      match:
+        any:
+          - (planned_values.root_module.resources | length(@) > `0`): true
+      assert:
+        all:
+          - message: EKS subnets must be private with map_public_ip_on_launch set to false for security.
+            check:
+              (planned_values.root_module.resources[?type=='aws_subnet'].values.map_public_ip_on_launch[?@ == `false`] | length(@) > `0`): true 

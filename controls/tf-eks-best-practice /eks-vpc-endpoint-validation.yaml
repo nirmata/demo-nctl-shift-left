@@ -1,0 +1,18 @@
+apiVersion: json.kyverno.io/v1alpha1
+kind: ValidatingPolicy
+metadata:
+  name: eks-vpc-endpoint-validation
+spec:
+  rules:
+    - name: validate-eks-vpc-endpoints
+      match:
+        any:
+          - (planned_values.root_module.resources[?type=='aws_eks_cluster'] | length(@) > `0`): true
+      assert:
+        all:
+          - message: EKS cluster must have private endpoint access enabled for security.
+            check:
+              (planned_values.root_module.resources[?type=='aws_eks_cluster'].values.vpc_config[].endpoint_private_access | contains(@, `true`)): true
+          - message: EKS cluster must have public endpoint access disabled for security.
+            check:
+              (planned_values.root_module.resources[?type=='aws_eks_cluster'].values.vpc_config[].endpoint_public_access | contains(@, `false`)): true 

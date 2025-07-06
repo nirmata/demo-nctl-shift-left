@@ -42,11 +42,8 @@ jobs:
         # terraform init
         # terraform plan -out tfplan.binary
         # terraform show -json tfplan.binary | jq > payload.json
-        run: | 
-          pwd
-          ls -la
-          ls -la controls/
-          nctl scan terraform -p controls/tf-eks-best-practice -r config-files/terraform/eks/terraform.plan --details --audit-as-warn
+        run: |
+          nctl scan terraform -p controls/tf-eks-best-practice -r config-files/terraform/eks/terraform.plan --details
 
       - name: NCTL Scan 2 - Terraform
         run: | 

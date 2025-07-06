@@ -47,6 +47,10 @@ jobs:
 
       - name: NCTL Scan 2 - Terraform
         run: | 
+         nctl scan terraform -p controls/tf-eks-best-practice -r config-files/terraform/eks/terraform-non-complaint.plan --details 
+
+      - name: NCTL Scan 3 - Terraform
+        run: | 
          nctl scan terraform -p controls/tf-eks-best-practice -r config-files/terraform/eks/terraform-non-complaint.plan --details --audit-as-warn
 
       - run: echo "🍏 This job's status is ${{ job.status }}."

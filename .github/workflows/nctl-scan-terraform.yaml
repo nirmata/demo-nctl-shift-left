@@ -22,8 +22,12 @@ jobs:
       - name: Checkout branch
         uses: actions/checkout@v3
 
-      - name: nctl-scan-installer
-        uses: nirmata/action-install-nctl-scan@v0.0.4
+      - name: Run a one-line script
+        run: |
+          echo "Downloading and Installing NCTL 4.1.0"
+          wget https://nirmata-downloads.s3.us-east-2.amazonaws.com/nctl/nctl_4.7.0/nctl_4.7.0_linux_386.zip
+          unzip -o *.zip
+          chmod 755 ./nctl
 
       - run: echo "🖥️ The workflow is now ready to test your code on the runner."
 

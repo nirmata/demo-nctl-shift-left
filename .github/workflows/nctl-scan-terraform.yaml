@@ -37,7 +37,7 @@ jobs:
       - name: Check nctl version
         run: nctl version
 
-      - name: NCTL Scan - Terraform
+      - name: NCTL Scan 1 - Terraform
         # cd config-files/terraform/ecs
         # terraform init
         # terraform plan -out tfplan.binary
@@ -46,7 +46,10 @@ jobs:
           pwd
           ls -la
           ls -la controls/
-          nctl scan terraform -p controls/tf-eks-best-practice/eks-ami-validation.yaml -r config-files/terraform/eks/terraform.plan --details  --audit-as-warn
-          # nctl scan terraform --policies controls/tf-eks-best-practice  --resources config-files/terraform/eks/terraform-non-complaint.plan --details  --audit-as-warn
+          nctl scan terraform -p controls/tf-eks-best-practice -r config-files/terraform/eks/terraform.plan --details  --audit-as-warn
+
+      - name: NCTL Scan 2 - Terraform
+        run: | 
+         nctl scan terraform --policies controls/tf-eks-best-practice  --resources config-files/terraform/eks/terraform-non-complaint.plan --details  --audit-as-warn
 
       - run: echo "🍏 This job's status is ${{ job.status }}."

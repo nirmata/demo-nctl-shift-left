@@ -173,7 +173,8 @@
                         ],
                         "tags": null,
                         "taint": [],
-                        "timeouts": null
+                        "timeouts": null,
+                        "ami_type": "AL2_x86_64"
                     },
                     "sensitive_values": {
                         "instance_types": [
@@ -872,7 +873,8 @@
                     ],
                     "tags": null,
                     "taint": [],
-                    "timeouts": null
+                    "timeouts": null,
+                    "ami_type": "AL2_x86_64"
                 },
                 "after_unknown": {
                     "ami_type": true,

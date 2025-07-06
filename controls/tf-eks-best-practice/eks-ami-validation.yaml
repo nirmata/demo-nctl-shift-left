@@ -14,6 +14,6 @@ spec:
           - (planned_values.root_module.resources | length(@) > `0`): true
       assert:
         all:
-          - message: EKS node group must use AL2_x86_64 AMI type for security compliance.
+          - message: EKS node group must use AL2_x86_64 AMI type for security compliance
             check:
               (planned_values.root_module.resources[?type=='aws_eks_node_group'].values.ami_type[?contains(@, 'AL2_x86_64')] | length(@) > `0`): true 

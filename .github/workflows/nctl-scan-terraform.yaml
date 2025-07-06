@@ -45,6 +45,7 @@ jobs:
         run: | 
           pwd
           ls -la
+          ls -la controls/
           nctl scan terraform --policies controls/tf-eks-best-practice  --resources config-files/terraform/eks/terraform.plan --details  --audit-as-warn
           nctl scan terraform --policies controls/tf-eks-best-practice  --resources config-files/terraform/eks/terraform-non-complaint.plan --details  --audit-as-warn
 

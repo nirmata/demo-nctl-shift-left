@@ -21,6 +21,8 @@ jobs:
 
       - name: Checkout branch
         uses: actions/checkout@v3
+        with:
+          ref: 'dolisss-patch-4'
 
       - name: Run a one-line script
         run: |

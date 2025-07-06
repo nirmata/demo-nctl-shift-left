@@ -28,6 +28,7 @@ jobs:
           wget https://nirmata-downloads.s3.us-east-2.amazonaws.com/nctl/nctl_4.7.0/nctl_4.7.0_linux_386.zip
           unzip -o *.zip
           chmod 755 ./nctl
+          sudo mv nctl /usr/local/bin/nctl
 
       - run: echo "🖥️ The workflow is now ready to test your code on the runner."
 

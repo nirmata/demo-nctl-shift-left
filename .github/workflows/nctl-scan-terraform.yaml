@@ -26,8 +26,8 @@ jobs:
 
       - name: Run a one-line script
         run: |
-          echo "Downloading and Installing NCTL 4.1.0"
-          wget https://nirmata-downloads.s3.us-east-2.amazonaws.com/nctl/nctl_4.7.0/nctl_4.7.0_linux_386.zip
+          echo "Downloading and Installing NCTL"
+          wget https://nirmata-downloads.s3.us-east-2.amazonaws.com/nctl/nctl_4.7.8-rc.1/nctl_4.7.8-rc.1_linux_386.zip  
           unzip -o *.zip
           chmod 755 ./nctl
           sudo mv nctl /usr/local/bin/nctl

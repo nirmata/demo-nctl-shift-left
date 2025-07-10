@@ -14,7 +14,7 @@ install_terraform() {
 
 # Function to run Terraform commands
 run_terraform_commands() {
-    cd config-files/terraform/ecs
+    cd config-files/terraform/eks
     echo "Running Terraform commands..."
     # Initialize Terraform in the directory where your configuration files are located
     terraform init

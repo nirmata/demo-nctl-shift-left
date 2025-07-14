@@ -4,43 +4,45 @@ on:
   pull_request:
     branches:
       - "main"
+  push:
+    branches: ["demo-eks-best-practice"]
+  # push:
+  #   branches:
+  #     - "main"
+env:
+  NIRMATA_TOKEN: ${{ secrets.NIRMATA_TOKEN }}
+  NIRMATA_URL: ${{ secrets.NIRMATA_URL }}
 
 jobs:
   NCTL-Scan-Terraform:
     runs-on: ubuntu-latest
-    # These permissions are needed to interact with GitHub's OIDC Token endpoint
-    permissions:
-      id-token: write   # This is required for requesting the JWT
-      contents: read    # This is required for actions/checkout
     steps:
       - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
 
-      - name: Checkout PR branch
+      - name: Checkout branch
         uses: actions/checkout@v3
         with:
-          # Checks out the repository linked to the PR
-          repository: ${{ github.event.pull_request.head.repo.full_name }}
-          # Checks out the branch from the PR
-          ref: ${{ github.event.pull_request.head.ref }}
+          ref: 'demo-eks-best-practice '
 
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v2
-        with:
-          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
-          role-session-name: nctl-scan-terraform-${{ github.event.pull_request.head.ref }}
-          aws-region: us-west-2
-
-      - name: nctl-scan-installer
-        uses: nirmata/action-install-nctl-scan@v0.0.4
+      - name: Run a one-line script
+        run: |
+          echo "Downloading and Installing NCTL"
+          wget https://nirmata-downloads.s3.us-east-2.amazonaws.com/nctl/nctl_4.7.7/nctl_4.7.7_linux_386.zip  
+          unzip -o *.zip
+          chmod 755 ./nctl
+          sudo mv nctl /usr/local/bin/nctl
 
       - run: echo "🖥️ The workflow is now ready to test your code on the runner."
 
       - name: Check nctl version
         run: nctl version
 
-      - name: NCTL Scan - Terraform
+      - name: NCTL Scan 1 - Terraform
+        # cd config-files/terraform/ecs
+        # terraform init
+        # terraform plan -out tfplan.binary
+        # terraform show -json tfplan.binary | jq > payload.json
         run: |
-          ./scripts/install-tf.sh
-          nctl scan terraform --policies controls/cis-eks --resources config-files/terraform/eks/payload.json
+          nctl scan terraform -p controls/tf-eks-best-practice -r config-files/terraform/eks/payload.json --details
 
       - run: echo "🍏 This job's status is ${{ job.status }}."

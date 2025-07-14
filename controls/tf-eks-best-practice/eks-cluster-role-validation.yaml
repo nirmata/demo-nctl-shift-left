@@ -1,0 +1,41 @@
+apiVersion: policies.kyverno.io/v1alpha1
+kind: ValidatingPolicy
+metadata:
+  name: eks-cluster-role-validation
+  annotations:
+    policies.kyverno.io/title: EKS Cluster Role Validation
+    policies.kyverno.io/category: EKS Best Practices
+    policies.kyverno.io/severity: high
+    policies.kyverno.io/description: >-
+      Validates that EKS clusters use the correct IAM role for the control plane. Ensures that the role is set and follows naming conventions or security requirements.
+spec:
+  validationActions:
+    - Deny
+  evaluation:
+    mode: JSON
+    background:
+      enabled: false
+  matchConstraints:
+    resourceRules:
+      - apiGroups: ["*"]
+        apiVersions: ["*"]
+        resources: ["*"]
+        operations: ["CREATE", "UPDATE"]
+  matchConditions:
+    - name: is-terraform-plan
+      expression: "has(object.planned_values) && has(object.terraform_version)"
+    - name: has-eks-cluster
+      expression: |
+        has(object.planned_values) && 
+          (has(object.planned_values.root_module) && has(object.planned_values.root_module.resources) &&
+           object.planned_values.root_module.resources.exists(r, r.type == 'aws_eks_cluster'))
+  validations:
+    - expression: |
+        (
+          (!has(object.planned_values.root_module.resources) ||
+           object.planned_values.root_module.resources.filter(r, r.type == 'aws_eks_cluster').all(cluster,
+             has(cluster.values.role_arn) &&
+             cluster.values.role_arn != ''
+           ))
+        )
+      message: "EKS clusters must have a non-empty role_arn set for the control plane IAM role." 

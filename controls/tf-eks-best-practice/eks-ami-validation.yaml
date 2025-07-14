@@ -1,0 +1,42 @@
+apiVersion: policies.kyverno.io/v1alpha1
+kind: ValidatingPolicy
+metadata:
+  name: eks-ami-validation
+  annotations:
+    policies.kyverno.io/title: EKS AMI Validation
+    policies.kyverno.io/category: EKS Best Practices
+    policies.kyverno.io/severity: high
+    policies.kyverno.io/description: >-
+      Validates that EKS node groups use approved AMI types. Using approved AMIs ensures 
+      security compliance, proper patching, and compatibility with EKS cluster versions.
+spec:
+  validationActions:
+    - Deny
+  evaluation:
+    mode: JSON
+    background:
+      enabled: false
+  matchConstraints:
+    resourceRules:
+      - apiGroups: ["*"]
+        apiVersions: ["*"]
+        resources: ["*"]
+        operations: ["CREATE", "UPDATE"]
+  matchConditions:
+    - name: is-terraform-plan
+      expression: "has(object.planned_values) && has(object.terraform_version)"
+    - name: has-eks-node-group
+      expression: |
+        has(object.planned_values) && 
+          (has(object.planned_values.root_module) && has(object.planned_values.root_module.resources) &&
+           object.planned_values.root_module.resources.exists(r, r.type == 'aws_eks_node_group'))
+  validations:
+    - expression: |
+        (
+          (!has(object.planned_values.root_module.resources) ||
+           object.planned_values.root_module.resources.filter(r, r.type == 'aws_eks_node_group').all(nodegroup,
+             !has(nodegroup.values.ami_type) || 
+             nodegroup.values.ami_type in ['AL2_x86_64', 'AL2_ARM_64', 'BOTTLEROCKET_x86_64', 'BOTTLEROCKET_ARM_64']
+           ))
+        )
+      message: "EKS node groups must use approved AMI types: AL2_x86_64, AL2_ARM_64, BOTTLEROCKET_x86_64, or BOTTLEROCKET_ARM_64" 

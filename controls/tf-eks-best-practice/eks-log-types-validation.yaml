@@ -1,0 +1,43 @@
+apiVersion: policies.kyverno.io/v1alpha1
+kind: ValidatingPolicy
+metadata:
+  name: eks-log-types-validation
+  annotations:
+    policies.kyverno.io/title: EKS Log Types Validation
+    policies.kyverno.io/category: EKS Best Practices
+    policies.kyverno.io/severity: high
+    policies.kyverno.io/description: >-
+      Validates that EKS clusters have all recommended control plane log types enabled for auditing and troubleshooting.
+spec:
+  validationActions:
+    - Deny
+  evaluation:
+    mode: JSON
+    background:
+      enabled: false
+  matchConstraints:
+    resourceRules:
+      - apiGroups: ["*"]
+        apiVersions: ["*"]
+        resources: ["*"]
+        operations: ["CREATE", "UPDATE"]
+  matchConditions:
+    - name: is-terraform-plan
+      expression: "has(object.planned_values) && has(object.terraform_version)"
+    - name: has-eks-cluster
+      expression: |
+        has(object.planned_values) && 
+          (has(object.planned_values.root_module) && has(object.planned_values.root_module.resources) &&
+           object.planned_values.root_module.resources.exists(r, r.type == 'aws_eks_cluster'))
+  validations:
+    - expression: |
+        (
+          (!has(object.planned_values.root_module.resources) ||
+           object.planned_values.root_module.resources.filter(r, r.type == 'aws_eks_cluster').all(cluster,
+             has(cluster.values.enabled_cluster_log_types) &&
+             ['api', 'audit', 'authenticator', 'controllerManager', 'scheduler'].all(log,
+               cluster.values.enabled_cluster_log_types.contains(log)
+             )
+           ))
+        )
+      message: "EKS clusters must have all recommended control plane log types enabled: api, audit, authenticator, controllerManager, scheduler." 

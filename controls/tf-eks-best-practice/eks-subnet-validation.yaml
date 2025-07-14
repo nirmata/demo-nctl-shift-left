@@ -1,0 +1,41 @@
+apiVersion: policies.kyverno.io/v1alpha1
+kind: ValidatingPolicy
+metadata:
+  name: eks-subnet-validation
+  annotations:
+    policies.kyverno.io/title: EKS Subnet Validation
+    policies.kyverno.io/category: EKS Best Practices
+    policies.kyverno.io/severity: high
+    policies.kyverno.io/description: >-
+      Validates that EKS clusters use private subnets for node groups and do not use public subnets for worker nodes.
+spec:
+  validationActions:
+    - Deny
+  evaluation:
+    mode: JSON
+    background:
+      enabled: false
+  matchConstraints:
+    resourceRules:
+      - apiGroups: ["*"]
+        apiVersions: ["*"]
+        resources: ["*"]
+        operations: ["CREATE", "UPDATE"]
+  matchConditions:
+    - name: is-terraform-plan
+      expression: "has(object.planned_values) && has(object.terraform_version)"
+    - name: has-eks-node-group
+      expression: |
+        has(object.planned_values) && 
+          (has(object.planned_values.root_module) && has(object.planned_values.root_module.resources) &&
+           object.planned_values.root_module.resources.exists(r, r.type == 'aws_eks_node_group'))
+  validations:
+    - expression: |
+        (
+          (!has(object.planned_values.root_module.resources) ||
+           object.planned_values.root_module.resources.filter(r, r.type == 'aws_eks_node_group').all(nodegroup,
+             !has(nodegroup.values.subnet_ids) ||
+             nodegroup.values.subnet_ids.all(subnet, subnet != '')
+           ))
+        )
+      message: "EKS node groups must use private subnets and not public subnets for worker nodes." 

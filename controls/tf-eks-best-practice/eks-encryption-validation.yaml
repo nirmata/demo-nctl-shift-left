@@ -1,0 +1,46 @@
+apiVersion: policies.kyverno.io/v1alpha1
+kind: ValidatingPolicy
+metadata:
+  name: eks-encryption-validation
+  annotations:
+    policies.kyverno.io/title: EKS Encryption Validation
+    policies.kyverno.io/category: EKS Best Practices
+    policies.kyverno.io/severity: high
+    policies.kyverno.io/description: >-
+      Validates that EKS clusters have encryption at rest enabled for secrets. 
+      This ensures that sensitive data stored in etcd is encrypted using customer-managed KMS keys.
+spec:
+  validationActions:
+    - Deny
+  evaluation:
+    mode: JSON
+    background:
+      enabled: false
+  matchConstraints:
+    resourceRules:
+      - apiGroups: ["*"]
+        apiVersions: ["*"]
+        resources: ["*"]
+        operations: ["CREATE", "UPDATE"]
+  matchConditions:
+    - name: is-terraform-plan
+      expression: "has(object.planned_values) && has(object.terraform_version)"
+    - name: has-eks-cluster
+      expression: |
+        has(object.planned_values) && 
+          (has(object.planned_values.root_module) && has(object.planned_values.root_module.resources) &&
+           object.planned_values.root_module.resources.exists(r, r.type == 'aws_eks_cluster'))
+  validations:
+    - expression: |
+        (
+          (!has(object.planned_values.root_module.resources) ||
+           object.planned_values.root_module.resources.filter(r, r.type == 'aws_eks_cluster').all(cluster,
+             has(cluster.values.encryption_config) &&
+             cluster.values.encryption_config.size() > 0 &&
+             cluster.values.encryption_config.all(config,
+               has(config.resources) && 
+               config.resources.contains('secrets')
+             )
+           ))
+        )
+      message: "EKS clusters must have encryption at rest enabled for secrets using encryption_config" 

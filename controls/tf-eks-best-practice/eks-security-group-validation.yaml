@@ -1,0 +1,44 @@
+apiVersion: policies.kyverno.io/v1alpha1
+kind: ValidatingPolicy
+metadata:
+  name: eks-security-group-validation
+  annotations:
+    policies.kyverno.io/title: EKS Security Group Validation
+    policies.kyverno.io/category: EKS Best Practices
+    policies.kyverno.io/severity: high
+    policies.kyverno.io/description: >-
+      Validates that EKS node security groups do not allow unrestricted ingress from 0.0.0.0/0 for all ports. Ensures node security groups are properly restricted.
+spec:
+  validationActions:
+    - Deny
+  evaluation:
+    mode: JSON
+    background:
+      enabled: false
+  matchConstraints:
+    resourceRules:
+      - apiGroups: ["*"]
+        apiVersions: ["*"]
+        resources: ["*"]
+        operations: ["CREATE", "UPDATE"]
+  matchConditions:
+    - name: is-terraform-plan
+      expression: "has(object.planned_values) && has(object.terraform_version)"
+    - name: has-security-group
+      expression: |
+        has(object.planned_values) && 
+          (has(object.planned_values.root_module) && has(object.planned_values.root_module.resources) &&
+           object.planned_values.root_module.resources.exists(r, r.type == 'aws_security_group'))
+  validations:
+    - expression: |
+        (
+          (!has(object.planned_values.root_module.resources) ||
+           object.planned_values.root_module.resources.filter(r, r.type == 'aws_security_group').all(sg,
+             !has(sg.values.ingress) ||
+             sg.values.ingress.all(rule,
+               !has(rule.cidr_blocks) ||
+               rule.cidr_blocks.all(cidr, cidr != '0.0.0.0/0')
+             )
+           ))
+        )
+      message: "EKS node security groups must not allow unrestricted ingress from 0.0.0.0/0 for all ports." 

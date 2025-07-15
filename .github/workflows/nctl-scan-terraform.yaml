@@ -42,9 +42,13 @@ jobs:
       - name: Check nctl version
         run: nctl version
 
+      - name: Login to Nirmata
+        run: |
+          nctl login --url https://www.nirmata.io --userid anusha.hegde@nirmata.com --token ${{ secrets.NIRMATA_TOKEN }}
+
       - name: NCTL Scan - Terraform
         run: |
           ./scripts/install-tf.sh
-          nctl scan terraform --policies controls/cis-eks/infrastructure --resources config-files/terraform/eks/payload.json
+          nctl scan terraform --policies controls/cis-eks/infrastructure --resources config-files/terraform/eks/payload.json --publish
 
       - run: echo "🍏 This job's status is ${{ job.status }}."

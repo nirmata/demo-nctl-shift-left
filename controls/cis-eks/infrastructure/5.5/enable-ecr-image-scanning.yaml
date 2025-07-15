@@ -4,7 +4,7 @@ metadata:
   name: enable-ecr-image-scanning
   annotations:
     policies.kyverno.io/title: Enable ECR Image Scanning
-    policies.kyverno.io/category: EKS Best Practices
+    policies.kyverno.io/category: CIS EKS Best Practices
     policies.kyverno.io/severity: high
     policies.kyverno.io/description: >-
       ECR image scanning is a security best practice that helps detect and remediate vulnerabilities in container images before they are deployed to production environments. 

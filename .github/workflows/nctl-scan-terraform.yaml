@@ -30,9 +30,13 @@ jobs:
           role-session-name: nctl-scan-terraform-${{ github.event.pull_request.head.ref }}
           aws-region: us-west-2
 
-      - name: nctl-scan-installer
-        uses: nirmata/action-install-nctl-scan@v0.0.4
-
+      - name: Download and Install NCTL
+        run: |
+          echo "Downloading and Installing NCTL"
+          wget https://nirmata-downloads.s3.us-east-2.amazonaws.com/nctl/nctl_4.7.8-rc.2/nctl_4.7.8-rc.2_linux_386.zip  
+          unzip -o *.zip
+          chmod 755 ./nctl
+          sudo mv nctl /usr/local/bin/nctl
       - run: echo "🖥️ The workflow is now ready to test your code on the runner."
 
       - name: Check nctl version

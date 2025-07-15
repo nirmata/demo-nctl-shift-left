@@ -4,7 +4,7 @@ metadata:
   name: enable-private-endpoint
   annotations:
     policies.kyverno.io/title: Enable Private Endpoint
-    policies.kyverno.io/category: EKS Best Practices
+    policies.kyverno.io/category: CIS EKS Best Practices
     policies.kyverno.io/severity: high
     policies.kyverno.io/description: >-
       Enabling private endpoint for EKS cluster minimizes the risk of unauthorized access and potential security breaches by reducing the attack surface of the EKS control plane. 

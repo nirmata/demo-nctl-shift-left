@@ -4,7 +4,7 @@ metadata:
   name: tls-termination
   annotations:
     policies.kyverno.io/title: Enable TLS Termination
-    policies.kyverno.io/category: EKS Best Practices
+    policies.kyverno.io/category: CIS EKS Best Practices
     policies.kyverno.io/severity: high
     policies.kyverno.io/description: >-
       Enabling TLS termination for EKS cluster minimizes the risk of unauthorized access and potential security breaches by reducing the attack surface of the EKS control plane. 

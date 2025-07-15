@@ -4,7 +4,7 @@ metadata:
   name: private-subnets-for-worker-nodes
   annotations:
     policies.kyverno.io/title: Private Subnets for Worker Nodes
-    policies.kyverno.io/category: EKS Best Practices
+    policies.kyverno.io/category: CIS EKS Best Practices
     policies.kyverno.io/severity: high
     policies.kyverno.io/description: >-
       Enabling private subnets for worker nodes minimizes the risk of unauthorized access and potential security breaches by reducing the attack surface of the EKS control plane. 

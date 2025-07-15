@@ -4,7 +4,7 @@ metadata:
   name: check-public-endpoint
   annotations:
     policies.kyverno.io/title: Check Public Endpoint
-    policies.kyverno.io/category: EKS Best Practices
+    policies.kyverno.io/category: CIS EKS Best Practices
     policies.kyverno.io/severity: high
     policies.kyverno.io/description: >-
       Disabling the public endpoint minimizes the risk of unauthorized access and potential security breaches by reducing the attack surface of the EKS control plane. 

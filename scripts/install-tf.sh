@@ -4,9 +4,9 @@
 install_terraform() {
     echo "Installing Terraform..."
     # Download Terraform binary
-    wget https://releases.hashicorp.com/terraform/0.15.0/terraform_0.15.0_linux_amd64.zip
+    wget https://releases.hashicorp.com/terraform/1.6.0/terraform_1.6.0_linux_amd64.zip
     # Unzip the downloaded file
-    unzip terraform_0.15.0_linux_amd64.zip
+    unzip terraform_1.6.0_linux_amd64.zip
     # Move Terraform binary to /usr/local/bin
     sudo mv terraform /usr/local/bin/
     echo "Terraform installed successfully."
@@ -14,7 +14,7 @@ install_terraform() {
 
 # Function to run Terraform commands
 run_terraform_commands() {
-    cd config-files/terraform/ecs
+    cd config-files/terraform/eks
     echo "Running Terraform commands..."
     # Initialize Terraform in the directory where your configuration files are located
     terraform init

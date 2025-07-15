@@ -1,0 +1,38 @@
+apiVersion: policies.kyverno.io/v1alpha1
+kind: ValidatingPolicy
+metadata:
+  name: enable-ecr-image-scanning
+  annotations:
+    policies.kyverno.io/title: Enable ECR Image Scanning
+    policies.kyverno.io/category: CIS EKS Best Practices
+    policies.kyverno.io/severity: high
+    policies.kyverno.io/description: >-
+      ECR image scanning is a security best practice that helps detect and remediate vulnerabilities in container images before they are deployed to production environments. 
+      It ensures that only secure and trusted images are used, reducing the risk of security breaches and maintaining the integrity of the application.
+spec:
+  validationActions:
+    - Deny
+  evaluation:
+    mode: JSON
+    background:
+      enabled: false
+  matchConstraints:
+    resourceRules:
+      - apiGroups: ["*"]
+        apiVersions: ["*"]
+        resources: ["*"]
+        operations: ["CREATE", "UPDATE"]
+  matchConditions:
+    - name: is-terraform-plan
+      expression: "has(object.planned_values) && has(object.terraform_version)"
+    - name: has-ecr-repo
+      expression: "has(object.planned_values) && has(object.planned_values.root_module) && has(object.planned_values.root_module.resources) && object.planned_values.root_module.resources.exists(r, r.type == 'aws_ecr_repository')"
+  validations:
+    - expression: |
+        object.planned_values.root_module.resources.filter(r, r.type == 'aws_ecr_repository').all(repo,
+          !has(repo.values.image_scanning_configuration) ||
+          repo.values.image_scanning_configuration.all(scanning_config,
+            !has(scanning_config.scan_on_push) || scanning_config.scan_on_push == true
+          )
+        )
+      message: "ECR image scanning should be enabled."

@@ -1,0 +1,46 @@
+apiVersion: policies.kyverno.io/v1alpha1
+kind: ValidatingPolicy
+metadata:
+  name: private-subnets-for-worker-nodes
+  annotations:
+    policies.kyverno.io/title: Private Subnets for Worker Nodes
+    policies.kyverno.io/category: CIS EKS Best Practices
+    policies.kyverno.io/severity: high
+    policies.kyverno.io/description: >-
+      Enabling private subnets for worker nodes minimizes the risk of unauthorized access and potential security breaches by reducing the attack surface of the EKS control plane. 
+spec:
+  validationActions:
+    - Deny
+  evaluation:
+    mode: JSON
+    background:
+      enabled: false
+  matchConstraints:
+    resourceRules:
+      - apiGroups: ["*"]
+        apiVersions: ["*"]
+        resources: ["*"]
+        operations: ["CREATE", "UPDATE"]
+  matchConditions:
+    - name: is-terraform-plan
+      expression: "has(object.planned_values) && has(object.terraform_version)"
+    - name: has-eks-cluster
+      expression: |
+        has(object.planned_values) && 
+          (has(object.planned_values.root_module) && has(object.planned_values.root_module.child_modules) &&
+           object.planned_values.root_module.child_modules.exists(m, 
+             has(m.resources) && m.resources.exists(r, r.type == 'aws_eks_cluster')))
+  validations:
+    - expression: |
+          (!has(object.planned_values.root_module.child_modules) ||
+           object.planned_values.root_module.child_modules.all(module,
+             !has(module.resources) ||
+             module.resources.filter(r, r.type == 'aws_eks_cluster').all(cluster,
+               !has(cluster.values.vpc_config) ||
+               cluster.values.vpc_config.all(vpc,
+                 !has(vpc.subnet_ids) || 
+                 vpc.subnet_ids.all(subnet_id, subnet_id.contains('private'))
+               )
+             )
+           ))
+      message: "Private subnets should be used for worker nodes."

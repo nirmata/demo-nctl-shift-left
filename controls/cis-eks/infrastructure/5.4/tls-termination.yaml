@@ -1,0 +1,34 @@
+apiVersion: policies.kyverno.io/v1alpha1
+kind: ValidatingPolicy
+metadata:
+  name: tls-termination
+  annotations:
+    policies.kyverno.io/title: Enable TLS Termination
+    policies.kyverno.io/category: CIS EKS Best Practices
+    policies.kyverno.io/severity: high
+    policies.kyverno.io/description: >-
+      Enabling TLS termination for EKS cluster minimizes the risk of unauthorized access and potential security breaches by reducing the attack surface of the EKS control plane. 
+spec:
+  validationActions:
+    - Deny
+  evaluation:
+    mode: JSON
+    background:
+      enabled: false
+  matchConstraints:
+    resourceRules:
+      - apiGroups: ["*"]
+        apiVersions: ["*"]
+        resources: ["*"]
+        operations: ["CREATE", "UPDATE"]
+  matchConditions:
+    - name: is-terraform-plan
+      expression: "has(object.planned_values) && has(object.terraform_version)"
+    - name: has-aws_lb_listener
+      expression: "has(object.planned_values) && has(object.planned_values.root_module) && has(object.planned_values.root_module.resources) && object.planned_values.root_module.resources.exists(r, r.type == 'aws_lb_listener')"
+  validations:
+    - expression: |
+        object.planned_values.root_module.resources.filter(r, r.type == 'aws_lb_listener').all(listener,
+          !has(listener.values.protocol) || listener.values.protocol == 'HTTPS'
+        )
+      message: "TLS termination should be enabled."

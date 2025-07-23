@@ -3,6 +3,7 @@
 ## Why Shift-Left?
 Shift left security is crucial as it emphasizes integrating security practices earlier in the software development lifecycle, allowing for proactive identification and mitigation of vulnerabilities and misconfigurations. By addressing security concerns from the outset, organizations can minimize risks, reduce costs associated with fixing issues later in the development process, and ultimately enhance the overall security posture of their products or systems.
 
+
 ## How does the Nirmata CLI (nctl) help?
 Integrating Nirmata CLI (`nctl`) into the Continuous Integration (CI) pipeline ensures rapid identification of misconfigurations in Kubernetes manifests, Dockerfiles, and Terraform files, preempting potential issues before they escalate. By providing automated remediations, it streamlines the process of fixing vulnerabilities, thereby reducing delays and ensuring a smoother path to production. This proactive approach enhances the reliability and security of deployments, ultimately accelerating the time-to-market for software releases.
 

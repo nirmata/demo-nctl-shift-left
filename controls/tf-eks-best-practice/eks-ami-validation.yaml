@@ -3,7 +3,7 @@ kind: ValidatingPolicy
 metadata:
   name: eks-ami-validation
   annotations:
-    policies.kyverno.io/category: EKS Security
+    policies.kyverno.io/category: EKS Security, CIS Complaince
     policies.kyverno.io/severity: High
     policies.kyverno.io/description: Validates EKS node group AMI types and security configurations
 spec:

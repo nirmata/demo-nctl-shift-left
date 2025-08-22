@@ -2,6 +2,8 @@ apiVersion: json.kyverno.io/v1alpha1
 kind: ValidatingPolicy
 metadata:
   name: eks-node-group-role-validation
+  annotations:
+    policies.kyverno.io/category: EKS Security, CIS Compliance-v1.2.0
 spec:
   rules:
     - name: validate-eks-node-group-role

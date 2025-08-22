@@ -3,6 +3,8 @@ apiVersion: json.kyverno.io/v1alpha1
 kind: ValidatingPolicy
 metadata:
   name: eks-log-types-validation
+  annotations:
+    policies.kyverno.io/category: EKS Security, CIS Compliance-v1.2.0
 spec:
   rules:
     - name: eks-log-types-validation

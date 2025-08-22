@@ -2,6 +2,8 @@ apiVersion: json.kyverno.io/v1alpha1
 kind: ValidatingPolicy
 metadata:
   name: eks-cluster-role-validation
+  annotations:
+    policies.kyverno.io/category: EKS Security
 spec:
   rules:
     - name: validate-eks-cluster-role

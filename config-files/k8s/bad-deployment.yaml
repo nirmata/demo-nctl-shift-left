@@ -13,6 +13,7 @@ spec:
     metadata:
       labels:
         app: nginx
+        demo: test
     spec:
       hostIPC: true
       hostPID: true

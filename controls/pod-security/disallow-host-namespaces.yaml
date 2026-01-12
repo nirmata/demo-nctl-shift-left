@@ -26,7 +26,7 @@ spec:
               kinds:
                 - Pod
       validate:
-        message: "Sharing the host namespaces is disallowed"
+        message: Sharing the host namespaces is disallowed.
         pattern:
           spec:
             =(hostPID): "false"

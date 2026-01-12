@@ -31,7 +31,7 @@ jobs:
           nctl login --url https://www.nirmata.io --userid anusha.hegde@nirmata.com --token ${{ secrets.NIRMATA_TOKEN }}
 
       - name: NCTL Scan - Kubernetes
-        run: nctl scan kubernetes --policies controls/pod-security --resources config-files/k8s --details
+        run: nctl scan kubernetes --policies controls/pod-security --resources config-files/k8s
 
 
       - run: echo "🍏 This job's status is ${{ job.status }}."

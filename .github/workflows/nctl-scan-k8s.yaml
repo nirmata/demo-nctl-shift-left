@@ -28,7 +28,7 @@ jobs:
 
       - name: Login to Nirmata
         run: |
-          nctl login --url https://www.nirmata.io --userid anusha.hegde@nirmata.com --token ${{ secrets.NIRMATA_TOKEN }}
+          nctl login --url https://www.nirmata.io --userid dolis@nirmata.com --token ${{ secrets.NIRMATA_TOKEN }}
 
       - name: NCTL Scan - Kubernetes
         run: nctl scan kubernetes --policies controls/pod-security --resources config-files/k8s

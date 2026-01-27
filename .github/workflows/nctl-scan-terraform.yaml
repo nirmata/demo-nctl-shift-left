@@ -49,11 +49,13 @@ jobs:
 
       - name: NCTL Scan - Terraform
         run: |
+          cat config-files/terraform/eks/payload.json
+
+      - name: NCTL Scan - Terraform
+        run: |
           nctl scan terraform --policies controls/cis-eks/infrastructure --resources config-files/terraform/eks/payload.json --publish
 
           
-      - name: NCTL Scan - Terraform
-        run: |
-          cat config-files/terraform/eks/payload.json
+  
 
       - run: echo "🍏 This job's status is ${{ job.status }}."

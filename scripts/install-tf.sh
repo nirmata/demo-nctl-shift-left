@@ -22,7 +22,6 @@ run_terraform_commands() {
     terraform plan -out tfplan.binary
     # Store in JSON
     terraform show -json tfplan.binary | jq > payload.json
-    cat payload.json
     echo "Terraform commands executed successfully."
 }
 

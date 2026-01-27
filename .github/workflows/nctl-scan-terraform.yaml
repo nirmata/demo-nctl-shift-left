@@ -47,7 +47,7 @@ jobs:
           nctl login --url https://www.nirmata.io --userid dolis@nirmata.com --token ${{ secrets.NIRMATA_TOKEN }}
           ./scripts/install-tf.sh
 
-      - name: NCTL Scan - Terraform
+      - name: NCTL op - Terraform
         run: |
           cat config-files/terraform/eks/payload.json
 

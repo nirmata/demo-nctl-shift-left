@@ -33,3 +33,5 @@ module "eks" {
   create_iam_role = false
   iam_role_arn    = aws_iam_role.eks_cluster_role.arn
 } 
+
+# Test: Policy validation check - Wed Jan  7 10:50:11 PST 2026

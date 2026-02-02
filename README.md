@@ -7,7 +7,7 @@ Shift left security is crucial as it emphasizes integrating security practices e
 Integrating Nirmata CLI (`nctl`) into the Continuous Integration (CI) pipeline ensures rapid identification of misconfigurations in Kubernetes manifests, Dockerfiles, and Terraform files, preempting potential issues before they escalate. By providing automated remediations, it streamlines the process of fixing vulnerabilities, thereby reducing delays and ensuring a smoother path to production. This proactive approach enhances the reliability and security of deployments, ultimately accelerating the time-to-market for software releases.
 
 ## Nirmata CLI
-Learn about the CLI [here](https://docs.nirmata.io/docs/npmk/nctl/).
+Learn about the CLI [here](https://docs.nirmata.io/docs/npmk/nctl/)
 
 ## Using nctl with GitHub Action
 Integrating nctl with GitHub Actions (or other pipelines) adds a critical check in the deployment process. `nctl` scans resources against customizable policies, enabling teams to enforce best practices and security standards. With the flexibility to either fail the pipeline or log issues without blocking it, nctl ensures thorough validation while accommodating varying project requirements.

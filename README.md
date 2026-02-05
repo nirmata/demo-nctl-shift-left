@@ -24,6 +24,6 @@ If you have any questions on how to use nctl in your CI pipeline, or if you want
 
 ## Demo workflow Doc 
 
-[Doc here] (https://docs.google.com/document/d/1mbTxCnDqtydv2NHBXHxfpMu5lnErWzOlbiDAzpK-h4o/edit?tab=t.0)
+[Doc here] https://docs.google.com/document/d/1mbTxCnDqtydv2NHBXHxfpMu5lnErWzOlbiDAzpK-h4o/edit?tab=t.0
 
 

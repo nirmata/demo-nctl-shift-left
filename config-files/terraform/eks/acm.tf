@@ -4,6 +4,6 @@ resource "aws_acm_certificate" "https_cert" {
   validation_method = "DNS"
 
   lifecycle {
-    create_before_destroy = true
+    create_before_destroy = false
   }
 } 

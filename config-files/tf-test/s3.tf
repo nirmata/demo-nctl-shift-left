@@ -19,7 +19,7 @@ resource "aws_s3_bucket_versioning" "compliant" {
   bucket = aws_s3_bucket.compliant.id
 
   versioning_configuration {
-    status = "Disabled"
+    status = "Suspended"
   }
 }
 

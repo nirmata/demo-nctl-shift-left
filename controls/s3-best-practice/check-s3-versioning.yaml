@@ -1,0 +1,42 @@
+# ValidatingPolicy that:
+# - Filter resource_changes for aws_s3_bucket_versioning / aws_s3_bucket (managed, create/update)
+# - Rule 1 (versioning_enabled): All such versioning changes have change.after.versioning_configuration[0].status == "Enabled"
+# - Rule 2 (legacy_versioning_enabled): All such bucket changes have no versioning block or change.after.versioning[0].enabled == true
+# - validation: both rules must pass
+apiVersion: policies.kyverno.io/v1alpha1
+kind: ValidatingPolicy
+metadata:
+  name: check-s3-versioning
+spec:
+  validationActions:
+    - Deny
+  evaluation:
+    mode: JSON
+  variables:
+    # Filter resource_changes: managed, create or update
+    - name: resource_changes
+      expression: |
+        object.?resource_changes.orValue([]).filter(rc,
+          rc.mode == 'managed'
+          && rc.?change.actions.orValue([]).exists(a, a == 'create' || a == 'update'))
+    # Filter resource_changes: aws_s3_bucket_versioning, managed, create or update
+    - name: s3_versioning_resources
+      expression: variables.resource_changes.filter(rc, rc.type == 'aws_s3_bucket_versioning')
+    # Filter resource_changes: aws_s3_bucket, managed, create or update
+    - name: s3_buckets
+      expression: variables.resource_changes.filter(rc, rc.type == 'aws_s3_bucket')
+    # Rule 1: all s3_versioning_resources have change.after.versioning_configuration[0].status == "Enabled"
+    - name: versioningEnabled
+      expression: |
+        variables.s3_versioning_resources.all(rv,
+          rv.?change.after.versioning_configuration.orValue([]).size() == 0 ||
+          rv.change.after.versioning_configuration[0].status == 'Enabled')
+    # Rule 2: all s3_buckets have length(versioning)==0 or versioning[0].enabled == true
+    - name: legacyVersioningEnabled
+      expression: |
+        variables.s3_buckets.all(rb,
+          rb.?change.after.versioning.orValue([]).size() == 0 || 
+          rb.change.after.versioning[0].enabled == true)
+  validations:
+    - expression: "variables.versioningEnabled && variables.legacyVersioningEnabled"
+      message: "S3 versioning required"

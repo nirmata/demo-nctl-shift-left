@@ -40,6 +40,7 @@ jobs:
           workflow: ci.yaml
           name: nctl-binary
           check_artifacts: true
+          workflow_conclusion: ""
 
       - name: Install nctl
         run: |

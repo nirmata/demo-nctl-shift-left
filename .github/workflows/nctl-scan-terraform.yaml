@@ -44,7 +44,12 @@ jobs:
         with:
           go-version-file: go-nctl/go.mod
 
+      - name: Configure git for private nirmata deps
+        run: git config --global url."https://oauth2:${{ secrets.GO_NCTL_READ_TOKEN }}@github.com/nirmata/".insteadOf "https://github.com/nirmata/"
+
       - name: Build nctl from source
+        env:
+          GOPRIVATE: github.com/nirmata/*
         run: |
           cd go-nctl
           CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o nctl .

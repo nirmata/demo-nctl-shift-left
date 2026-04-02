@@ -44,6 +44,6 @@ jobs:
           nctl login --url https://www.nirmata.io --userid dolis@nirmata.com --token ${{ secrets.NIRMATA_TOKEN }}
 
       - name: NCTL Scan - Dockerfile
-        run: nctl scan dockerfile --policies controls/dockerfile-best-practices --resources config-files/dockerfile/Dockerfile --publish --pipeline 0
+        run: nctl scan dockerfile --policies controls/dockerfile-best-practices --resources config-files/dockerfile/Dockerfile --publish --pipeline=false
   
       - run: echo "🍏 This job's status is ${{ job.status }}."

@@ -14,13 +14,25 @@ jobs:
       - name: Check out repository code
         uses: actions/checkout@v4
 
-      - name: Download and Install NCTL
+      - name: Check out go-nctl (NDEV-20537)
+        uses: actions/checkout@v4
+        with:
+          repository: nirmata/go-nctl
+          ref: NDEV-20537
+          token: ${{ secrets.GO_NCTL_READ_TOKEN }}
+          path: go-nctl
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: go-nctl/go.mod
+
+      - name: Build nctl from source
         run: |
-          echo "Downloading and Installing NCTL"
-          wget https://nirmata-downloads.s3.us-east-2.amazonaws.com/nctl/nctl_4.10.1/nctl_4.10.1_linux_386.zip 
-          unzip -o *.zip
-          chmod 755 ./nctl
+          cd go-nctl
+          CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o nctl .
           sudo mv nctl /usr/local/bin/nctl
+
       - run: echo "🖥️ The workflow is now ready to test your code on the runner."
 
       - name: Check nctl version
@@ -31,7 +43,7 @@ jobs:
           nctl login --url https://www.nirmata.io --userid dolis@nirmata.com --token ${{ secrets.NIRMATA_TOKEN }}
 
       - name: NCTL Scan - Kubernetes
-        run: nctl scan kubernetes --resources config-files/k8s --publish
+        run: nctl scan kubernetes --resources config-files/k8s --publish --pipeline 0
 
 
       - run: echo "🍏 This job's status is ${{ job.status }}."

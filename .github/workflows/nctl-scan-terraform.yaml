@@ -31,28 +31,19 @@ jobs:
           role-session-name: nctl-scan-terraform-${{ github.event.pull_request.head.ref }}
           aws-region: us-west-2
 
-      - name: Check out go-nctl (NDEV-20537)
-        uses: actions/checkout@v4
+      - name: Download nctl artifact from go-nctl (NDEV-20537)
+        uses: dawidd6/action-download-artifact@v6
         with:
-          repository: nirmata/go-nctl
-          ref: NDEV-20537
-          token: ${{ secrets.GO_NCTL_READ_TOKEN }}
-          path: go-nctl
+          github_token: ${{ secrets.GO_NCTL_READ_TOKEN }}
+          repo: nirmata/go-nctl
+          branch: NDEV-20537
+          workflow: ci.yaml
+          name: nctl-binary
+          check_artifacts: true
 
-      - name: Set up Go
-        uses: actions/setup-go@v5
-        with:
-          go-version-file: go-nctl/go.mod
-
-      - name: Configure git for private nirmata deps
-        run: git config --global url."https://oauth2:${{ secrets.GO_NCTL_READ_TOKEN }}@github.com/nirmata/".insteadOf "https://github.com/nirmata/"
-
-      - name: Build nctl from source
-        env:
-          GOPRIVATE: github.com/nirmata/*
+      - name: Install nctl
         run: |
-          cd go-nctl
-          CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o nctl .
+          chmod +x nctl
           sudo mv nctl /usr/local/bin/nctl
 
       - run: echo "🖥️ The workflow is now ready to test your code on the runner."

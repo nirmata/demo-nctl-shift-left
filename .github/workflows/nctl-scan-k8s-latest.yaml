@@ -1,0 +1,40 @@
+name: NCTL Scan K8s (Latest Release)
+run-name: ${{ github.actor }} has triggered Scan Action 🚀
+on:
+  pull_request:
+    branches:
+      - "main"
+
+jobs:
+  NCTL-Scan-K8s-Latest:
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    steps:
+      - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
+
+      - name: Check out repository code
+        uses: actions/checkout@v4
+
+      - name: Install latest nctl
+        run: |
+          LATEST=$(gh release view --repo nirmata/go-nctl --json tagName --jq '.tagName' | sed 's/^v//')
+          curl -sL "https://github.com/nirmata/go-nctl/releases/latest/download/nctl_${LATEST}_linux_amd64.zip" -o nctl.zip
+          unzip -o nctl.zip nctl
+          chmod +x nctl
+          sudo mv nctl /usr/local/bin/nctl
+        env:
+          GH_TOKEN: ${{ secrets.GO_NCTL_READ_TOKEN }}
+
+      - run: echo "🖥️ The workflow is now ready to test your code on the runner."
+
+      - name: Check nctl version
+        run: nctl version
+
+      - name: Login to Nirmata
+        run: |
+          nctl login --url https://www.nirmata.io --userid dolis@nirmata.com --token ${{ secrets.NIRMATA_TOKEN }}
+
+      - name: NCTL Scan - Kubernetes
+        run: nctl scan kubernetes --resources config-files/k8s --publish
+
+      - run: echo "🍏 This job's status is ${{ job.status }}."

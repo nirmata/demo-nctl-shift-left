@@ -31,21 +31,14 @@ jobs:
           role-session-name: nctl-scan-terraform-${{ github.event.pull_request.head.ref }}
           aws-region: us-west-2
 
-      - name: Download nctl artifact from go-nctl (NDEV-20537)
-        uses: dawidd6/action-download-artifact@v6
-        with:
-          github_token: ${{ secrets.GO_NCTL_READ_TOKEN }}
-          repo: nirmata/go-nctl
-          branch: NDEV-20537
-          workflow: ci.yaml
-          name: nctl-binary
-          check_artifacts: true
-          workflow_conclusion: ""
-
-      - name: Install nctl
+      - name: Install latest nctl
         run: |
+          gh release download --repo nirmata/go-nctl --pattern "nctl_*_linux_amd64.zip" --output nctl.zip
+          unzip -o nctl.zip nctl
           chmod +x nctl
           sudo mv nctl /usr/local/bin/nctl
+        env:
+          GH_TOKEN: ${{ secrets.GO_NCTL_READ_TOKEN }}
 
       - run: echo "🖥️ The workflow is now ready to test your code on the runner."
 
@@ -63,7 +56,7 @@ jobs:
 
       - name: NCTL Scan - Terraform
         run: |
-          nctl scan terraform --policies controls/cis-eks/infrastructure --resources config-files/terraform/eks/payload.json --publish --pipeline=false
+          nctl scan terraform --policies controls/cis-eks/infrastructure --resources config-files/terraform/eks/payload.json --publish
 
           
   

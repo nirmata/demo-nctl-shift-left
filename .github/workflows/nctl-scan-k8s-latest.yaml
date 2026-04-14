@@ -17,8 +17,7 @@ jobs:
 
       - name: Install latest nctl
         run: |
-          LATEST=$(gh release view --repo nirmata/go-nctl --json tagName --jq '.tagName' | sed 's/^v//')
-          curl -sL "https://github.com/nirmata/go-nctl/releases/latest/download/nctl_${LATEST}_linux_amd64.zip" -o nctl.zip
+          gh release download --repo nirmata/go-nctl --pattern "nctl_*_linux_amd64.zip" --output nctl.zip
           unzip -o nctl.zip nctl
           chmod +x nctl
           sudo mv nctl /usr/local/bin/nctl

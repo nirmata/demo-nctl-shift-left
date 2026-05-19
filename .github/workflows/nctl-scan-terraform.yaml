@@ -53,7 +53,7 @@ jobs:
 
       - name: NCTL Scan - Terraform
         run: |
-          nctl scan terraform --policies controls/cis-eks/infrastructure --resources config-files/terraform/eks/payload.json --publish
+          nctl scan terraform --policies controls/cis-eks/infrastructure --resources config-files/terraform/eks/payload.json --details --publish
 
           
   

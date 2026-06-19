@@ -19,7 +19,8 @@ Use the readily available [GitHub Action](https://github.com/marketplace/actions
 Checkout the examples in [.github/workflows](./.github/workflows) directory on how to use `nctl` in action!
 
 ## Have Questions?
-If you have any questions on how to use nctl in your CI pipeline, or if you want to see more features, feel free to create an issue in this repository, or contact us at [support@nirmata.com](support@nirmata.com)
+If you have any questions on how to use nctl in your CI pipeline, or if you want to see more features, feel free to create an issue in this repository, or contact us at [support@nirmata.com](support@nirmata.com) 
+.
 
 
 ## Demo workflow Doc 

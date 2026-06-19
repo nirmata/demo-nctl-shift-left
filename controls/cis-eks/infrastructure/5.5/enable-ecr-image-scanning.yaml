@@ -26,13 +26,59 @@ spec:
     - name: is-terraform-plan
       expression: "has(object.planned_values) && has(object.terraform_version)"
     - name: has-ecr-repo
-      expression: "has(object.planned_values) && has(object.planned_values.root_module) && has(object.planned_values.root_module.resources) && object.planned_values.root_module.resources.exists(r, r.type == 'aws_ecr_repository')"
+      expression: |
+        has(object.planned_values) && has(object.planned_values.root_module) && 
+        (
+          // Level 1: Direct resources in root_module
+          (has(object.planned_values.root_module.resources) && 
+           object.planned_values.root_module.resources.exists(r, r.type == 'aws_ecr_repository')) ||
+          // Level 2: Resources in child_modules (1 level deep)
+          (has(object.planned_values.root_module.child_modules) &&
+           object.planned_values.root_module.child_modules.exists(m, 
+             has(m.resources) && m.resources.exists(r, r.type == 'aws_ecr_repository'))) ||
+          // Level 3: Resources in nested child_modules (2 levels deep)
+          (has(object.planned_values.root_module.child_modules) &&
+           object.planned_values.root_module.child_modules.exists(m,
+             has(m.child_modules) && m.child_modules.exists(nested,
+               has(nested.resources) && nested.resources.exists(r, r.type == 'aws_ecr_repository'))))
+        )
   validations:
     - expression: |
-        object.planned_values.root_module.resources.filter(r, r.type == 'aws_ecr_repository').all(repo,
-          !has(repo.values.image_scanning_configuration) ||
-          repo.values.image_scanning_configuration.all(scanning_config,
-            !has(scanning_config.scan_on_push) || scanning_config.scan_on_push == true
-          )
+        (
+          // Check root_module.resources (direct resources)
+          (!has(object.planned_values.root_module.resources) ||
+           object.planned_values.root_module.resources.filter(r, r.type == 'aws_ecr_repository').all(repo,
+             !has(repo.values.image_scanning_configuration) ||
+             repo.values.image_scanning_configuration.all(scanning_config,
+               !has(scanning_config.scan_on_push) || scanning_config.scan_on_push == true
+             )
+           ))
+          &&
+          // Check child_modules (1 level deep)
+          (!has(object.planned_values.root_module.child_modules) ||
+           object.planned_values.root_module.child_modules.all(module,
+             !has(module.resources) ||
+             module.resources.filter(r, r.type == 'aws_ecr_repository').all(repo,
+               !has(repo.values.image_scanning_configuration) ||
+               repo.values.image_scanning_configuration.all(scanning_config,
+                 !has(scanning_config.scan_on_push) || scanning_config.scan_on_push == true
+               )
+             )
+           ))
+          &&
+          // Check nested child_modules (2 levels deep)
+          (!has(object.planned_values.root_module.child_modules) ||
+           object.planned_values.root_module.child_modules.all(module,
+             !has(module.child_modules) ||
+             module.child_modules.all(nested,
+               !has(nested.resources) ||
+               nested.resources.filter(r, r.type == 'aws_ecr_repository').all(repo,
+                 !has(repo.values.image_scanning_configuration) ||
+                 repo.values.image_scanning_configuration.all(scanning_config,
+                   !has(scanning_config.scan_on_push) || scanning_config.scan_on_push == true
+                 )
+               )
+             )
+           ))
         )
       message: "ECR image scanning should be enabled."

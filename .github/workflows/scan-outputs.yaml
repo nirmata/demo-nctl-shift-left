@@ -14,10 +14,10 @@ jobs:
       - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
 
       - name: Check out repository code
-        uses: actions/checkout@v4
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5  # v4
 
       - name: nctl-scan-installer
-        uses: nirmata/action-install-nctl-scan@v0.0.4
+        uses: nirmata/action-install-nctl-scan@aef60bc2f1608594ba2798f0a965ee8716b9400b  # v0.0.4
 
       - run: echo "🖥️ The workflow is now ready to test your code on the runner."
 
